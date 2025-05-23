@@ -1,6 +1,8 @@
-import React from 'react'
+import React, { useRef } from 'react'
 
 export default function Search({searchItem, setSearchItem}) {
+
+	const inputRef = useRef();
 	return (
 		<form class='max-w-md mx-auto'>
 			<label

@@ -1,11 +1,16 @@
-import React from 'react'
 import './App.css'
-import Homepage from './pages/Homepage'
-import { Routes, Route } from 'react-router-dom'
-import Navbar from './components/Navbar'
-import HostEvents from './pages/HostEvents'
+
+import { Route, Routes } from 'react-router-dom'
+
+import FindTeammatePage from './pages/FindTeammatePage'
 import Footer from './components/Footer'
+import Homepage from './pages/Homepage'
+import HostEvents from './pages/HostEvents'
+import LoginPage from './pages/LoginPage'
+import Navbar from './components/Navbar'
 import ProfilePage from './pages/ProfilePage'
+import RegisterPage from './pages/RegisterPage'
+
 // import Login from './components/AuthComponents/Login'
 
 export default function App() {
@@ -16,8 +21,11 @@ export default function App() {
 				<Route path='/' element={<Homepage />} />
 				<Route path='/addEvents' element={<HostEvents />} />
 				<Route path='/profile' element={<ProfilePage />} />
+				<Route path='/login' element={<LoginPage />} />
+				<Route path='/register' element={<RegisterPage />} />
+				<Route path='/teammate' element={<FindTeammatePage />} />
 			</Routes>
-			<Footer />
+			{/* <Footer /> */}
 		</div>
 	)
 }

@@ -1,11 +1,12 @@
-import React from 'react'
 import {
-	FaUsers,
 	FaCalendarAlt,
-	FaUserCircle,
 	FaSignInAlt,
+	FaUserCircle,
+	FaUsers,
 } from 'react-icons/fa'
+
 import { Link } from 'react-router-dom'
+import React from 'react'
 
 export default function Navbar() {
 	return (
@@ -21,7 +22,7 @@ export default function Navbar() {
 				<div className='flex justify-center items-center tracking-widest'>
 					<ul className='flex gap-12 text-normal mx-8'>
 						<li>
-							<Link to='/' className='underLight'>
+							<Link to='/teammate' className='underLight'>
 								<div className='flex items-center'>
 									Find TeamMate{' '}
 									<FaUsers className='ml-2 ' size={18} />
@@ -48,12 +49,12 @@ export default function Navbar() {
 							</Link>
 						</li>
 						<li>
-							<a href='' className='underLight'>
+							<Link to="/login" className='underLight'>
 								<div className='flex items-center'>
 									Login
 									<FaSignInAlt className='ml-2 ' size={18} />
 								</div>
-							</a>
+							</Link>
 						</li>
 					</ul>
 				</div>
