@@ -5,13 +5,13 @@ const URL_2 = 'http://localhost:8081'
 
 //users api
 //signin for user
-export function signInAPI(email, password) {
-	const res = axios.post(URL_1 + '/api/signin', { email, password })
+export async function  signInAPI(email, password) {
+	const res = await axios.post(URL_1 + '/api/signin', { email, password })
 	return res.data
 }
 
-export function signUpAPI(name, email, password, skills, education) {
-	const res = axios.post(URL_1 + '/api/signup', {
+export async function signUpAPI(name, email, password, skills, education) {
+	const res = await axios.post(URL_1 + '/api/signup', {
 		name,
 		email,
 		password,
@@ -39,13 +39,13 @@ export async function fetchAllTeammatesAPI() {
 
 // fetch all events api
 export async function fetchAllEventsAPI() {
-	const res = await axios.get(`${URL_2}/api/viewEvents`)
+	const res = await axios.get(`${URL_1}/api/viewEvents`)
 	return res.data
 }
 
 // add event api
 export function addEventAPI(eventName, date, location, eventType, description) {
-	const res = axios.post(URL_2 + '/api/addEvent', {
+	const res = axios.post(URL_1 + '/api/addEvent', {
 		eventName,
 		date,
 		location,
@@ -57,7 +57,7 @@ export function addEventAPI(eventName, date, location, eventType, description) {
 
 // remove an event
 export async function removeEventAPI(eventId) {
-	const res = await axios.delete(`${URL_2}/api/removeEvent`, {
+	const res = await axios.delete(`${URL_1}/api/removeEvent`, {
 		params: { eventId },
 	})
 	return res.data
@@ -72,7 +72,7 @@ export function updateEventAPI(
 	eventType,
 	description
 ) {
-	const res = axios.post(URL_2 + '/api/updateEvent', {
+	const res = axios.post(URL_1 + '/api/updateEvent', {
 		eventId,
 		eventName,
 		date,

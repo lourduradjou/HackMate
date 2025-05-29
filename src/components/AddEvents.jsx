@@ -1,72 +1,131 @@
-import React from 'react'
+import React, { useState } from 'react'
+
+import { addEventAPI } from '../api'
 
 export default function AddEvents() {
+	const [formData, setFormData] = useState({
+		title: '',
+		date: '',
+		location: '',
+		type: '',
+		description: '',
+	})
+
+	const [message, setMessage] = useState('')
+	const [error, setError] = useState('')
+
+	const handleChange = (e) => {
+		const { name, value } = e.target
+		setFormData((prev) => ({
+			...prev,
+			[name]: value,
+		}))
+	}
+
+	const handleSubmit = async (e) => {
+		e.preventDefault()
+		setMessage('')
+		setError('')
+
+		try {
+			const response = await addEventAPI(
+				formData.title,
+				formData.date,
+				formData.location,
+				formData.type,
+				formData.description
+			)
+			if (response.success) {
+				setMessage(response.message || 'Event added successfully!')
+				setFormData({
+					title: '',
+					date: '',
+					location: '',
+					type: '',
+					description: '',
+				})
+			} else {
+				setError('Failed to add event.')
+			}
+		} catch (error) {
+			setError('Error adding event. Please try again.' + error.message)
+		}
+	}
+
 	return (
 		<div>
-			<form class='max-w-md mx-auto'>
-				{/* <!-- Title --> */}
-				<div class='relative z-0 w-full mb-5 group'>
+			<form onSubmit={handleSubmit} className='max-w-md mx-auto'>
+				{/* Title */}
+				<div className='relative z-0 w-full mb-5 group'>
 					<input
 						type='text'
 						name='title'
 						id='title'
-						class='block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer'
+						className='block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer'
 						placeholder=' '
 						required
+						value={formData.title}
+						onChange={handleChange}
 					/>
 					<label
-						for='title'
-						class='peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6'
+						htmlFor='title'
+						className='peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6'
 					>
 						Hackathon Title
 					</label>
 				</div>
 
-				{/* <!-- Date --> */}
-				<div class='relative z-0 w-full mb-5 group'>
+				{/* Date */}
+				<div className='relative z-0 w-full mb-5 group'>
 					<input
 						type='date'
 						name='date'
 						id='date'
-						class='block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer'
+						className='block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer'
 						placeholder=' '
 						required
+						value={formData.date}
+						onChange={handleChange}
 					/>
 					<label
-						for='date'
-						class='peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6'
+						htmlFor='date'
+						className='peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6'
 					>
 						Date
 					</label>
 				</div>
 
-				{/* <!-- Location --> */}
-				<div class='relative z-0 w-full mb-5 group'>
+				{/* Location */}
+				<div className='relative z-0 w-full mb-5 group'>
 					<input
 						type='text'
 						name='location'
 						id='location'
-						class='block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer'
+						className='block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer'
 						placeholder=' '
 						required
+						value={formData.location}
+						onChange={handleChange}
 					/>
 					<label
-						for='location'
-						class='peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6'
+						htmlFor='location'
+						className='peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6'
 					>
 						Location (City, Country)
 					</label>
 				</div>
 
-				{/* <!-- Type --> */}
-				<div class='relative z-0 w-full mb-5 group'>
+				{/* Type */}
+				<div className='relative z-0 w-full mb-5 group'>
 					<select
 						name='type'
 						id='type'
-						class='block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer'
+						className='block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer'
 						required
+						value={formData.type}
+						onChange={handleChange}
 					>
-						<option value='' disabled selected>
+						<option value='' disabled>
 							Select Type
 						</option>
 						<option value='Beginner'>Beginner</option>
@@ -75,39 +134,53 @@ export default function AddEvents() {
 						<option value='Expert'>Expert</option>
 					</select>
 					<label
-						for='type'
-						class='peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6'
+						htmlFor='type'
+						className='peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6'
 					>
 						Type
 					</label>
 				</div>
 
-				{/* <!-- Description --> */}
-				<div class='relative z-0 w-full mb-5 group'>
+				{/* Description */}
+				<div className='relative z-0 w-full mb-5 group'>
 					<textarea
 						name='description'
 						id='description'
 						rows='4'
-						class='block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer'
+						className='block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer'
 						placeholder=' '
 						required
+						value={formData.description}
+						onChange={handleChange}
 					></textarea>
 					<label
-						for='description'
-						class='peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6'
+						htmlFor='description'
+						className='peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6'
 					>
 						Description
 					</label>
 				</div>
 
-				{/* <!-- Submit Button --> */}
+				{/* Submit Button */}
 				<button
 					type='submit'
-					class='min-w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'
+					className='min-w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'
 				>
 					Submit
 				</button>
 			</form>
+
+			{/* Success or Error message */}
+			{message && (
+				<p className='mt-4 text-green-500 font-semibold text-center'>
+					{message}
+				</p>
+			)}
+			{error && (
+				<p className='mt-4 text-red-500 font-semibold text-center'>
+					{error}
+				</p>
+			)}
 		</div>
 	)
 }

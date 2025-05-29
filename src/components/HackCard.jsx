@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import axios from 'axios'
-import image1 from '../assets/images/image1.jpg'
-const ACCESS_KEY = '9VEMOk5T1RQjoGkvBaO7Izwotex9fLU2n-o85i4itbM' // Replace with your Unsplash access key
+
+import image1 from '../assets/images/image3.jpg'
+import image2 from '../assets/images/image1.jpg'
+import image3 from '../assets/images/image2.jpg'
 
 export default function HackCard({ title, date, location, type, description }) {
 	const [imageUrl, setImageUrl] = useState('')
@@ -23,22 +24,12 @@ export default function HackCard({ title, date, location, type, description }) {
 	}
 
 	useEffect(() => {
-		// Fetch image from Unsplash API
-		const fetchImage = async () => {
-			try {
-				// const response = await axios.get(
-				// 	`https://api.unsplash.com/photos/random?query=hackathon&client_id=${ACCESS_KEY}`
-				// )
-				//setImageUrl(response.data.urls.regular)
-				setImageUrl(
-					`https://source.unsplash.com/400x300/?hackathon,technology&${Math.random()}`
-				)
-			} catch (error) {
-				console.error('Error fetching image:', error)
-			}
-		}
+		// Array of imported images
+		const images = [image1, image2, image3]
 
-		fetchImage()
+		// Select random image
+		const randomIndex = Math.floor(Math.random() * images.length)
+		setImageUrl(images[randomIndex])
 	}, [])
 
 	return (
@@ -47,7 +38,7 @@ export default function HackCard({ title, date, location, type, description }) {
 				<a href='#'>
 					<img
 						className='rounded-t-lg w-full h-48 object-cover'
-						src={image1} // Fallback image
+						src={imageUrl} // Random local image
 						alt='Hackathon'
 					/>
 				</a>

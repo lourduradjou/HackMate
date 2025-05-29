@@ -1,97 +1,85 @@
-import React, { useEffect, useState, useTransition } from 'react'
+import React, { useEffect, useState } from 'react'
+
 import HackCard from './HackCard'
 import Search from './Search'
+import { fetchAllEventsAPI } from '../api' // adjust the import path if needed
+import { useNavigate } from 'react-router-dom'
 
 export default function HackathonLists() {
-	const [searchItem, setSearchItem] = useState('')
-	const [hackEvents, setHackEvents] = useState([
-		{
-			title: 'CodeFusion 2025',
-			date: '04/15/2025',
-			location: 'San Francisco, CA',
-			type: 'Intermediate',
-			description:
-				'A hackathon focused on building innovative FinTech solutions, including payment gateways and fraud detection models.',
-		},
-		{
-			title: 'AI Innovators Challenge',
-			date: '05/10/2025',
-			location: 'Online',
-			type: 'Advanced',
-			description:
-				'An AI-focused hackathon where participants create solutions using machine learning and deep learning models to solve real-world problems.',
-		},
-		{
-			title: 'GreenTech Hack',
-			date: '06/20/2025',
-			location: 'Berlin, Germany',
-			type: 'Beginner',
-			description:
-				'An event promoting sustainability, where hackers create eco-friendly solutions, such as energy management systems and smart recycling apps.',
-		},
-		{
-			title: 'HealthTech Sprint',
-			date: '07/05/2025',
-			location: 'Bangalore, India',
-			type: 'Intermediate',
-			description:
-				'A healthcare-themed hackathon where teams build applications for telemedicine, patient monitoring, and health data analysis.',
-		},
-		{
-			title: 'CyberDefenders',
-			date: '08/12/2025',
-			location: 'Online',
-			type: 'Expert',
-			description:
-				'A cybersecurity competition where participants develop and defend systems against simulated attacks, testing their security skills.',
-		},
-		{
-			title: 'Future of Mobility Hack',
-			date: '09/18/2025',
-			location: 'Tokyo, Japan',
-			type: 'Intermediate',
-			description:
-				'A mobility-focused hackathon exploring autonomous vehicles, smart transportation, and route optimization solutions.',
-		},
-	])
+  const [searchItem, setSearchItem] = useState('')
+  const [hackEvents, setHackEvents] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
 
-	// Function to add new event
-	const addEvent = (newEvent) => {
-		setHackEvents((prevEvents) => [...prevEvents, newEvent])
-	}
+  const navigate = useNavigate()
 
-	const filteredHackathonsEvents = searchItem
-		? hackEvents.filter(
-				(hack) =>
-					hack.title
-						.toLowerCase()
-						.includes(searchItem.toLowerCase()) ||
-					hack.location
-						.toLowerCase()
-						.includes(searchItem.toLowerCase()) ||
-					hack.type.toLowerCase().includes(searchItem.toLowerCase())
-		  )
-		: hackEvents
+  useEffect(() => {
+    // Check for email in localStorage; if missing, redirect to login
+    // const email = localStorage.getItem('email')
+    // if (!email) {
+    //   navigate('/login')
+    //   return
+    // }
 
-	return (
-		<div className='text-white'>
-			<Search searchItem={searchItem} setSearchItem={setSearchItem} />
+    const fetchEvents = async () => {
+      try {
+        const res = await fetchAllEventsAPI()
+        if (res.success) {
+          setHackEvents(res.events)
+        } else {
+          setError('⚠️ Failed to load events')
+        }
+      } catch (err) {
+        console.error(err)
+        setError('❌ Error fetching events')
+      } finally {
+        setLoading(false)
+      }
+    }
 
-			<h1 className='font-bold text-2xl text-center my-6 bg-gradient-to-r from-blue-100 to-blue-300 bg-clip-text text-transparent'>
-				Hackathon Lists
-			</h1>
-			<div className='flex flex-wrap gap-8 justify-center'>
-				{filteredHackathonsEvents.map((event, index) => (
-					<HackCard
-						key={index}
-						title={event.title}
-						date={event.date}
-						location={event.location}
-						description={event.description}
-						type={event.type}
-					/>
-				))}
-			</div>
-		</div>
-	)
+    fetchEvents()
+  }, [navigate])
+
+  const filteredHackathonsEvents = searchItem
+    ? hackEvents.filter(
+        (hack) =>
+          hack.eventName.toLowerCase().includes(searchItem.toLowerCase()) ||
+          hack.location.toLowerCase().includes(searchItem.toLowerCase()) ||
+          hack.eventType.toLowerCase().includes(searchItem.toLowerCase())
+      )
+    : hackEvents
+
+  if (loading) {
+    return <p className='text-center mt-10'>Loading hackathons...</p>
+  }
+
+  if (error) {
+    return <p className='text-center mt-10 text-red-500'>{error}</p>
+  }
+
+  return (
+    <div className='text-white'>
+      <Search searchItem={searchItem} setSearchItem={setSearchItem} />
+
+      <h1 className='font-bold text-2xl text-center my-6 bg-gradient-to-r from-blue-100 to-blue-300 bg-clip-text text-transparent'>
+        Hackathon Lists
+      </h1>
+      {filteredHackathonsEvents.length === 0 ? (
+        <p className='text-center'>No hackathons found.</p>
+      ) : (
+        <div className='flex flex-wrap gap-8 justify-center'>
+          {filteredHackathonsEvents.map((event) => (
+            <HackCard
+              key={event.id}
+              title={event.eventName}
+              date={event.date}
+              location={event.location}
+              description={event.description}
+              type={event.eventType}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  )
 }
