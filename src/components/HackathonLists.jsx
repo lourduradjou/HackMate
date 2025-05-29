@@ -15,11 +15,11 @@ export default function HackathonLists() {
 
   useEffect(() => {
     // Check for email in localStorage; if missing, redirect to login
-    // const email = localStorage.getItem('email')
-    // if (!email) {
-    //   navigate('/login')
-    //   return
-    // }
+    const email = localStorage.getItem('email')
+    if (!email) {
+      navigate('/login')
+      return
+    }
 
     const fetchEvents = async () => {
       try {
@@ -71,6 +71,7 @@ export default function HackathonLists() {
           {filteredHackathonsEvents.map((event) => (
             <HackCard
               key={event.id}
+              id={event.id}
               title={event.eventName}
               date={event.date}
               location={event.location}

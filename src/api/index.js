@@ -44,8 +44,8 @@ export async function fetchAllEventsAPI() {
 }
 
 // add event api
-export function addEventAPI(eventName, date, location, eventType, description) {
-	const res = axios.post(URL_1 + '/api/addEvent', {
+export async function addEventAPI(eventName, date, location, eventType, description) {
+	const res = await axios.post(URL_1 + '/api/addEvent', {
 		eventName,
 		date,
 		location,
@@ -64,7 +64,7 @@ export async function removeEventAPI(eventId) {
 }
 
 // update an event
-export function updateEventAPI(
+export async function updateEventAPI(
 	eventId,
 	eventName,
 	date,
@@ -72,7 +72,7 @@ export function updateEventAPI(
 	eventType,
 	description
 ) {
-	const res = axios.post(URL_1 + '/api/updateEvent', {
+	const res = await axios.post(URL_1 + '/api/updateEvent', {
 		eventId,
 		eventName,
 		date,

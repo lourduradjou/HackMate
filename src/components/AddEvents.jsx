@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { addEventAPI } from '../api'
+import { useNavigate } from 'react-router-dom'
 
 export default function AddEvents() {
 	const [formData, setFormData] = useState({
@@ -9,6 +10,14 @@ export default function AddEvents() {
 		location: '',
 		type: '',
 		description: '',
+	})
+	const navigate = useNavigate()
+	useEffect(() => {
+		const email = localStorage.getItem('email')
+		if (!email) {
+			navigate('/login')
+			return
+		}
 	})
 
 	const [message, setMessage] = useState('')
@@ -35,7 +44,7 @@ export default function AddEvents() {
 				formData.type,
 				formData.description
 			)
-			if (response.success) {
+			if (response?.success) {
 				setMessage(response.message || 'Event added successfully!')
 				setFormData({
 					title: '',

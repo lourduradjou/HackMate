@@ -4,12 +4,18 @@ import {
 	FaUserCircle,
 	FaUsers,
 } from 'react-icons/fa'
-
-import { Link } from 'react-router-dom'
-import React from 'react'
+import { Link, useLocation } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
 
 export default function Navbar() {
-	const isLogged = !!localStorage.getItem('email')
+	const location = useLocation()
+	
+	const [isLogged, setIsLogged] = useState(!!localStorage.getItem('email'))
+
+	useEffect(() => {
+		// Recheck on every route change
+		setIsLogged(!!localStorage.getItem('email'))
+	}, [location])
 
 	return (
 		<nav className='py-7 px-14'>
@@ -55,9 +61,10 @@ export default function Navbar() {
 								<Link to='/login' className='underLight'>
 									<button
 										className='flex items-center text-red-500'
-										onClick={() =>
+										onClick={() => {
 											localStorage.removeItem('email')
-										}
+											setIsLogged(false)
+										}}
 									>
 										Logout
 										{/* <FaSignInAlt

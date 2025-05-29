@@ -2,6 +2,7 @@ import './App.css'
 
 import { Route, Routes } from 'react-router-dom'
 
+import EventDetailPage from './pages/EventDetailPage'
 import FindTeammatePage from './pages/FindTeammatePage'
 import Footer from './components/Footer'
 import Homepage from './pages/Homepage'
@@ -24,6 +25,7 @@ export default function App() {
 				<Route path='/login' element={<LoginPage />} />
 				<Route path='/register' element={<RegisterPage />} />
 				<Route path='/teammate' element={<FindTeammatePage />} />
+				<Route path='/events/:id' element={<EventDetailPage />} />
 			</Routes>
 			{/* <Footer /> */}
 		</div>

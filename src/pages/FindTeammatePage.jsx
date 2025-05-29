@@ -3,13 +3,22 @@ import React, { useEffect, useState } from 'react'
 import { IoIosSend } from 'react-icons/io'
 import Search from '../components/Search'
 import { fetchAllTeammatesAPI } from '../api' // adjust path as needed
+import { useNavigate } from 'react-router-dom'
 
 const FindTeammatePage = () => {
+	const [searchItem, setSearchItem] = useState('')
 	const [teammates, setTeammates] = useState([])
 	const [loading, setLoading] = useState(true)
 	const [error, setError] = useState('')
 
+	const navigate = useNavigate()
+
 	useEffect(() => {
+		const email = localStorage.getItem('email')
+		if (!email) {
+			navigate('/login')
+			return
+		}
 		const fetchTeammates = async () => {
 			try {
 				const res = await fetchAllTeammatesAPI()
@@ -25,6 +34,21 @@ const FindTeammatePage = () => {
 		fetchTeammates()
 	}, [])
 
+	const filteredHackathonsEvents = searchItem
+		? teammates.filter(
+				(team) =>
+					team.name
+						.toLowerCase()
+						.includes(searchItem.toLowerCase()) ||
+					team.education
+						.toLowerCase()
+						.includes(searchItem.toLowerCase()) ||
+					team.skills.some((skill) =>
+						skill.toLowerCase().includes(searchItem.toLowerCase())
+					)
+		  )
+		: teammates
+
 	if (loading) {
 		return <p className='text-center mt-10'>Loading teammates...</p>
 	}
@@ -35,7 +59,7 @@ const FindTeammatePage = () => {
 
 	return (
 		<div>
-			<Search />
+			<Search searchItem={searchItem} setSearchItem={setSearchItem} />
 			<section className='mt-16'>
 				<div className='relative overflow-x-auto shadow-md sm:rounded-lg w-2/3 mx-auto'>
 					<table className='w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400'>
@@ -59,7 +83,7 @@ const FindTeammatePage = () => {
 							</tr>
 						</thead>
 						<tbody>
-							{teammates.map((item, index) => (
+							{filteredHackathonsEvents.map((item, index) => (
 								<tr
 									key={index}
 									className='bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600'
@@ -88,15 +112,15 @@ const FindTeammatePage = () => {
 									</td>
 									<td className='px-6 py-4 text-right'>
 										<a
-											href='#'
+											href={`mailto:${item.email}?subject=Hackathon%20Team%20Request&body=Hi%20${item.name},%0A%0AI%20came%20across%20your%20profile%20on%20HackMate%20and%20would%20love%20to%20team%20up%20for%20a%20hackathon!%0A%0AHere%27s%20a%20bit%20about%20me:%0A- Name:%20[Your%20Name]%0A- Skills:%20[Your%20Skills]%0A- Why%20I%27d%20like%20to%20collaborate:%20[Your%20Reason]%0A%0ALet%20me%20know%20if%20you%27re%20interested!%0A%0AThanks!`}
 											className='font-medium text-blue-600 dark:text-blue-500 hover:underline'
 										>
-											<div className='flex gap-2 items-center'>
+											<button className='flex gap-2 items-center'>
 												<div>Request</div>
 												<div>
 													<IoIosSend size={24} />
 												</div>
-											</div>
+											</button>
 										</a>
 									</td>
 								</tr>
