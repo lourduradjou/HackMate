@@ -12,7 +12,7 @@ const LoginPage = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const result = await signInAPI(email, password);
+            const {data : result} = await signInAPI(email, password);
             if (result.success && result.isAuthenticated) {
                 navigate('/'); // redirect to home
             } else {
@@ -20,7 +20,7 @@ const LoginPage = () => {
             }
         } catch (err) {
             console.error(err);
-            setError('Something went wrong. Please try again.');
+            err.status === 401 ? setError('Invalid email or password') : setError('Something went wrong. Please try again.');
         }
     };
 

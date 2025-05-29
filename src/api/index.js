@@ -7,7 +7,7 @@ const URL_2 = 'http://localhost:8081'
 //signin for user
 export function signInAPI(email, password) {
 	const res = axios.post(URL_1 + '/api/signin', { email, password })
-	return res.data
+	return res
 }
 
 export function signUpAPI(name, email, password, skills, education) {
