@@ -53,7 +53,7 @@ export async function fetchAllEventsAPI() {
 
 // fetch all events api hosted by a person via email
 export async function fetchAllEventsHostedAPI(email) {
-	const res = await axios.get(`${URL_2}/api/viewEvents/`+ email)
+	const res = await axios.get(`${URL_2}/api/viewEvents/` + email)
 	return res.data
 }
 
@@ -102,7 +102,16 @@ export async function updateEventAPI(
 	})
 	return res.data
 }
-
+export async function registerEventAPI(eventId, email) {
+	const res = await axios.post(`${URL_1}/api/registerEvent`, {
+		eventId,
+		email,
+	})
+	if (res.status !== 200) {
+		throw new Error(res.data.message || 'Registration failed')
+	}
+	return res.data
+}
 
 // fetch events user registered to
 export async function fetchMyEvents(email) {
