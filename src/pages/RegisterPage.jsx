@@ -43,6 +43,7 @@ const RegisterPage = () => {
 			if (res.success) {
 				setMessage('✅ Registered successfully!')
 				localStorage.setItem('email', email)
+				localStorage.setItem('role',role )
 				navigate('/')
 			} else {
 				setMessage('⚠️ Registration failed. Please try again.')
