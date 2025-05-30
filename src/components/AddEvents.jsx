@@ -1,29 +1,36 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 import { addEventAPI } from '../api'
 import { useNavigate } from 'react-router-dom'
 
 export default function AddEvents() {
-	let email;
+	const emailRef = useRef('')
+	const navigate = useNavigate()
+
 	const [formData, setFormData] = useState({
 		title: '',
 		date: '',
 		location: '',
 		type: '',
 		description: '',
-		hostedBy: email,
-	})
-	const navigate = useNavigate()
-	useEffect(() => {
-		email = localStorage.getItem('email')
-		if (!email) {
-			navigate('/login')
-			return
-		}
+		hostedBy: '',
 	})
 
 	const [message, setMessage] = useState('')
 	const [error, setError] = useState('')
+
+	useEffect(() => {
+		const storedEmail = localStorage.getItem('email')
+		if (!storedEmail) {
+			navigate('/login')
+			return
+		}
+		emailRef.current = storedEmail
+		setFormData((prev) => ({
+			...prev,
+			hostedBy: storedEmail,
+		}))
+	}, [navigate])
 
 	const handleChange = (e) => {
 		const { name, value } = e.target
@@ -44,7 +51,8 @@ export default function AddEvents() {
 				formData.date,
 				formData.location,
 				formData.type,
-				formData.description
+				formData.description,
+				formData.hostedBy
 			)
 			if (response?.success) {
 				setMessage(response.message || 'Event added successfully!')
@@ -54,12 +62,13 @@ export default function AddEvents() {
 					location: '',
 					type: '',
 					description: '',
+					hostedBy: emailRef.current,
 				})
 			} else {
 				setError('Failed to add event.')
 			}
 		} catch (error) {
-			setError('Error adding event. Please try again.' + error.message)
+			setError('Error adding event. Please try again. ' + error.message)
 		}
 	}
 
@@ -72,7 +81,7 @@ export default function AddEvents() {
 						type='text'
 						name='title'
 						id='title'
-						className='block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer'
+						className='block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-600 peer'
 						placeholder=' '
 						required
 						value={formData.title}
@@ -92,7 +101,7 @@ export default function AddEvents() {
 						type='date'
 						name='date'
 						id='date'
-						className='block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer'
+						className='block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-600 peer'
 						placeholder=' '
 						required
 						value={formData.date}
@@ -112,7 +121,7 @@ export default function AddEvents() {
 						type='text'
 						name='location'
 						id='location'
-						className='block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer'
+						className='block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-600 peer'
 						placeholder=' '
 						required
 						value={formData.location}
@@ -131,18 +140,26 @@ export default function AddEvents() {
 					<select
 						name='type'
 						id='type'
-						className='block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer'
+						className='block py-2.5 px-0 w-full text-sm text-gray-900 dark:text-white bg-gray-800 dark:bg-gray-800 border-0 border-b-2 border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-600 peer'
 						required
 						value={formData.type}
 						onChange={handleChange}
 					>
-						<option value='' disabled>
+						<option value='' disabled className='bg-gray-800 text-white'>
 							Select Type
 						</option>
-						<option value='Beginner'>Beginner</option>
-						<option value='Intermediate'>Intermediate</option>
-						<option value='Advanced'>Advanced</option>
-						<option value='Expert'>Expert</option>
+						<option value='Beginner' className='bg-gray-800 text-white'>
+							Beginner
+						</option>
+						<option value='Intermediate' className='bg-gray-800 text-white'>
+							Intermediate
+						</option>
+						<option value='Advanced' className='bg-gray-800 text-white'>
+							Advanced
+						</option>
+						<option value='Expert' className='bg-gray-800 text-white'>
+							Expert
+						</option>
 					</select>
 					<label
 						htmlFor='type'
@@ -158,7 +175,7 @@ export default function AddEvents() {
 						name='description'
 						id='description'
 						rows='4'
-						className='block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer'
+						className='block py-2.5 px-0 w-full text-sm text-gray-900 dark:text-white bg-transparent border-0 border-b-2 border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-600 peer'
 						placeholder=' '
 						required
 						value={formData.description}
@@ -175,7 +192,7 @@ export default function AddEvents() {
 				{/* Submit Button */}
 				<button
 					type='submit'
-					className='min-w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'
+					className='min-w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'
 				>
 					Submit
 				</button>

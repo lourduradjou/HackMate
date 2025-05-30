@@ -91,15 +91,22 @@ export default function Navbar() {
 								</li>
 							</>
 						)}
+						{role !== 'host' ? (
+							<li>
+								<NavLink to='/profile' className={navLinkClass}>
+									<div className='flex items-center'>
+										Profile
+										<FaUserCircle
+											className='ml-2 '
+											size={18}
+										/>
+									</div>
+								</NavLink>
+							</li>
+						) : (
+							''
+						)}
 
-						<li>
-							<NavLink to='/profile' className={navLinkClass}>
-								<div className='flex items-center'>
-									Profile
-									<FaUserCircle className='ml-2 ' size={18} />
-								</div>
-							</NavLink>
-						</li>
 						<li>
 							{isLogged ? (
 								<NavLink to='/login' className={navLinkClass}>

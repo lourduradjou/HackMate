@@ -11,11 +11,28 @@ export default function HostedEventsPage() {
 	useEffect(() => {
 		async function fetchEvents() {
 			try {
-				const data = await fetchAllEventsHostedAPI(email)
-				setEvents(data)
+				const response = await fetchAllEventsHostedAPI(email)
+
+				if (response.status === 404) {
+					// No events found
+					setEvents([])
+					setError('No events hosted.')
+				} else if (!response.ok) {
+					// Other server errors
+					throw new Error(`Error: ${response.status}`)
+				} else {
+					const data = await response.json()
+					setEvents(data)
+					setError(null) // clear any previous error
+				}
 			} catch (err) {
-				setError('Failed to load events')
-				console.error(err)
+				if (err.message.includes('404')) {
+					setEvents([])
+					setError('No events hosted.')
+				} else {
+					setError('Failed to load events.')
+					console.error(err)
+				}
 			} finally {
 				setLoading(false)
 			}
@@ -41,13 +58,15 @@ export default function HostedEventsPage() {
 
 	if (loading)
 		return <div className='text-center text-gray-300'>Loading...</div>
-	if (error) return <div className='text-center text-red-500'>{error}</div>
+
+	if (error)
+		return <div className='text-center text-red-500'>{error}</div>
 
 	return (
 		<div className='p-10 text-gray-200'>
 			<h2 className='text-3xl font-bold mb-6'>My Hosted Events</h2>
 			{events.length === 0 ? (
-				<div className='text-gray-400'>No events found.</div>
+				<div className='text-gray-400'>No events hosted.</div>
 			) : (
 				<ul className='space-y-6'>
 					{events.map((event) => (
