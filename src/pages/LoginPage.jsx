@@ -16,6 +16,7 @@ const LoginPage = () => {
 			if (result.success && result.isAuthenticated) {
 				// Save email to localStorage for later use
 				localStorage.setItem('email', email)
+				localStorage.setItem('role', result.role)
 				navigate('/') // redirect to home
 			} else {
 				setError('Invalid email or password')
@@ -27,8 +28,8 @@ const LoginPage = () => {
 	}
 
 	return (
-		<div>
-			<form className='max-w-sm mx-auto' onSubmit={handleSubmit}>
+		<div className='flex h-screen justify-center items-center'>
+			<form className='w-1/6 mx-auto' onSubmit={handleSubmit}>
 				<div className='mb-5'>
 					<label
 						htmlFor='email'

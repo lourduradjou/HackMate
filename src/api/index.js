@@ -5,18 +5,26 @@ const URL_2 = 'http://localhost:8081'
 
 //users api
 //signin for user
-export async function  signInAPI(email, password) {
+export async function signInAPI(email, password) {
 	const res = await axios.post(URL_1 + '/api/signin', { email, password })
 	return res.data
 }
 
-export async function signUpAPI(name, email, password, skills, education) {
+export async function signUpAPI(
+	name,
+	email,
+	password,
+	skills,
+	education,
+	role
+) {
 	const res = await axios.post(URL_1 + '/api/signup', {
 		name,
 		email,
 		password,
 		skills,
 		education,
+		role,
 	})
 	return res.data
 }
@@ -44,7 +52,13 @@ export async function fetchAllEventsAPI() {
 }
 
 // add event api
-export async function addEventAPI(eventName, date, location, eventType, description) {
+export async function addEventAPI(
+	eventName,
+	date,
+	location,
+	eventType,
+	description
+) {
 	const res = await axios.post(URL_2 + '/api/addEvent', {
 		eventName,
 		date,

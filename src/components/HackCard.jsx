@@ -1,18 +1,33 @@
-import { Link } from 'react-router-dom'
-import { useEffect } from 'react'
+// import { Link } from 'react-router-dom'
+
+// import { useEffect } from 'react'
+
 // import image1 from '../assets/images/image3.jpg'
 // import image2 from '../assets/images/image1.jpg'
 // import image3 from '../assets/images/image2.jpg'
 
-export default function HackCard({ id, title, date, location, type, description }) {
+export default function HackCard({
+	id,
+	title,
+	date,
+	location,
+	type,
+	description,
+}) {
+	const role = localStorage.getItem('role')
 
 	const getTypeColor = (type) => {
 		switch (type.toLowerCase()) {
-			case 'beginner': return 'bg-green-200 text-green-800'
-			case 'intermediate': return 'bg-yellow-200 text-yellow-800'
-			case 'advanced': return 'bg-red-200 text-red-800'
-			case 'expert': return 'bg-violet-200 text-violet-800'
-			default: return 'bg-gray-200 text-gray-800'
+			case 'beginner':
+				return 'bg-green-200 text-green-800'
+			case 'intermediate':
+				return 'bg-yellow-200 text-yellow-800'
+			case 'advanced':
+				return 'bg-red-200 text-red-800'
+			case 'expert':
+				return 'bg-violet-200 text-violet-800'
+			default:
+				return 'bg-gray-200 text-gray-800'
 		}
 	}
 
@@ -24,7 +39,9 @@ export default function HackCard({ id, title, date, location, type, description 
 			return
 		}
 
-		const confirm = window.confirm(`Do you want to register for "${title}"?`)
+		const confirm = window.confirm(
+			`Do you want to register for "${title}"?`
+		)
 
 		if (!confirm) return
 
@@ -41,7 +58,9 @@ export default function HackCard({ id, title, date, location, type, description 
 				alert('You have successfully registered for the event.')
 			} else {
 				const error = await response.json()
-				alert('Registration failed: ' + (error.message || 'Unknown error'))
+				alert(
+					'Registration failed: ' + (error.message || 'Unknown error')
+				)
 			}
 		} catch (err) {
 			console.error(err)
@@ -84,12 +103,17 @@ export default function HackCard({ id, title, date, location, type, description 
 							/>
 						</svg>
 					</Link> */}
-					<button
-						onClick={handleRegister}
-						className='px-3 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300 dark:bg-green-500 dark:hover:bg-green-600 dark:focus:ring-green-700'
-					>
-						Register
-					</button>
+					{role !== 'host' ? (
+						<button
+							onClick={handleRegister}
+							className='px-3 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300 dark:bg-green-500 dark:hover:bg-green-600 dark:focus:ring-green-700'
+						>
+							Register
+						</button>
+					) : (
+						''
+					)}
+
 					<div
 						className={`px-3 py-1 rounded-lg text-sm font-semibold ${getTypeColor(
 							type

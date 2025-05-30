@@ -17,15 +17,68 @@ import RegisterPage from './pages/RegisterPage'
 export default function App() {
 	return (
 		<div className='min-h-screen bg-[#212529] pb-10'>
-			<Navbar />
 			<Routes>
-				<Route path='/' element={<Homepage />} />
-				<Route path='/addEvents' element={<HostEvents />} />
-				<Route path='/profile' element={<ProfilePage />} />
-				<Route path='/login' element={<LoginPage />} />
-				<Route path='/register' element={<RegisterPage />} />
-				<Route path='/teammate' element={<FindTeammatePage />} />
-				<Route path='/events/:id' element={<EventDetailPage />} />
+				<Route
+					path='/'
+					element={
+						<>
+							<Navbar />
+							<Homepage />
+						</>
+					}
+				/>
+				<Route
+					path='/addEvents'
+					element={
+						<>
+							<Navbar />
+							<HostEvents />
+						</>
+					}
+				/>
+				<Route
+					path='/profile'
+					element={
+						<>
+							<Navbar />
+							<ProfilePage />
+						</>
+					}
+				/>
+				<Route
+					path='/login'
+					element={
+						<>
+							<LoginPage />
+						</>
+					}
+				/>
+				<Route
+					path='/register'
+					element={
+						<>
+							<RegisterPage />
+						</>
+					}
+				/>
+				<Route
+					path='/teammate'
+					element={
+						<>
+							<Navbar />
+							<FindTeammatePage />
+						</>
+					}
+				/>
+				<Route
+					path='/events/:id'
+					element={
+						<>
+							<Navbar />
+							<EventDetailPage />
+						</>
+					}
+				/>
 			</Routes>
 			{/* <Footer /> */}
 		</div>

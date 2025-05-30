@@ -1,7 +1,7 @@
+import { Link, useNavigate } from 'react-router-dom'
 import React, { useState } from 'react'
 
 import { signUpAPI } from '../api'
-import { useNavigate } from 'react-router-dom'
 
 const RegisterPage = () => {
 	const [name, setName] = useState('')
@@ -10,6 +10,7 @@ const RegisterPage = () => {
 	const [skills, setSkills] = useState([])
 	const [skillInput, setSkillInput] = useState('')
 	const [education, setEducation] = useState('')
+	const [role, setRole] = useState('participant') // default role
 	const [message, setMessage] = useState('')
 	const navigate = useNavigate()
 
@@ -35,8 +36,9 @@ const RegisterPage = () => {
 				name,
 				email,
 				password,
-				skills, // sending array here
-				education
+				skills,
+				education,
+				role // add role here
 			)
 			if (res.success) {
 				setMessage('✅ Registered successfully!')
@@ -52,10 +54,13 @@ const RegisterPage = () => {
 	}
 
 	return (
-		<div>
-			<form className='max-w-sm mx-auto' onSubmit={handleSubmit}>
+		<div className='flex flex-1 justify-center items-center h-screen w-full'>
+			<form className='w-1/5 mx-auto' onSubmit={handleSubmit}>
 				<div className='mb-5'>
-					<label htmlFor='name' className='block mb-2 text-sm font-medium text-gray-100'>
+					<label
+						htmlFor='name'
+						className='block mb-2 text-sm font-medium text-gray-100'
+					>
 						Your Name
 					</label>
 					<input
@@ -65,10 +70,14 @@ const RegisterPage = () => {
 						onChange={(e) => setName(e.target.value)}
 						className='border border-gray-300 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5'
 						required
+						placeholder='Enter your name'
 					/>
 				</div>
 				<div className='mb-5'>
-					<label htmlFor='email' className='block mb-2 text-sm font-medium text-gray-100'>
+					<label
+						htmlFor='email'
+						className='block mb-2 text-sm font-medium text-gray-100'
+					>
 						Your Email
 					</label>
 					<input
@@ -78,10 +87,14 @@ const RegisterPage = () => {
 						onChange={(e) => setEmail(e.target.value)}
 						className='border border-gray-300 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5'
 						required
+						placeholder='Enter your email'
 					/>
 				</div>
 				<div className='mb-5'>
-					<label htmlFor='skills' className='block mb-2 text-sm font-medium text-gray-100'>
+					<label
+						htmlFor='skills'
+						className='block mb-2 text-sm font-medium text-gray-100'
+					>
 						Your Skills (type & press Enter or ,)
 					</label>
 					<input
@@ -91,7 +104,7 @@ const RegisterPage = () => {
 						onChange={(e) => setSkillInput(e.target.value)}
 						onKeyDown={handleSkillKeyDown}
 						className='border border-gray-300 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5'
-						
+						placeholder='Enter your skills'
 					/>
 					<div className='mt-2 flex flex-wrap gap-2'>
 						{skills.map((skill) => (
@@ -112,7 +125,10 @@ const RegisterPage = () => {
 					</div>
 				</div>
 				<div className='mb-5'>
-					<label htmlFor='education' className='block mb-2 text-sm font-medium text-gray-100'>
+					<label
+						htmlFor='education'
+						className='block mb-2 text-sm font-medium text-gray-100'
+					>
 						Your Highest Level Of Education
 					</label>
 					<input
@@ -121,12 +137,31 @@ const RegisterPage = () => {
 						value={education}
 						onChange={(e) => setEducation(e.target.value)}
 						className='border border-gray-300 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5'
-						
 						required
+						placeholder='Your education (B.tech, m.tech, ph.d)'
 					/>
 				</div>
+
+				{/* Role selector */}
+				<div className='mb-5 text-gray-200 '>
+					<label className='block mb-2 text-sm font-medium text-gray-100'>
+						Select Role
+					</label>
+					<select
+						value={role}
+						onChange={(e) => setRole(e.target.value)}
+						className='border bg-[#212529] border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5'
+					>
+						<option value='host'>Host</option>
+						<option value='participant'>Participant</option>
+					</select>
+				</div>
+
 				<div className='mb-5'>
-					<label htmlFor='password' className='block mb-2 text-sm font-medium text-gray-100'>
+					<label
+						htmlFor='password'
+						className='block mb-2 text-sm font-medium text-gray-100'
+					>
 						Your Password
 					</label>
 					<input
@@ -136,15 +171,25 @@ const RegisterPage = () => {
 						onChange={(e) => setPassword(e.target.value)}
 						className='border border-gray-300 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5'
 						required
+						placeholder='Enter your password'
 					/>
 				</div>
-
-				<button
-					type='submit'
-					className='text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center'
-				>
-					Submit
-				</button>
+				<div className='flex gap-4'>
+					<button
+						type='submit'
+						className=' text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  sm:w-auto px-5 py-2.5 text-center'
+					>
+						Submit
+					</button>
+					<Link to='/login'>
+						<button
+							type='submit'
+							className=' text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  sm:w-auto px-5 py-2.5 text-center'
+						>
+							Login
+						</button>
+					</Link>
+				</div>
 			</form>
 
 			{message && <p className='mt-4 text-center text-sm'>{message}</p>}

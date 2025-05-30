@@ -19,8 +19,6 @@ export default function AddEvents() {
 		if (!email) {
 			navigate('/login')
 			return
-		}else {
-			
 		}
 	})
 

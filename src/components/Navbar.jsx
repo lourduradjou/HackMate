@@ -4,72 +4,105 @@ import {
 	FaUserCircle,
 	FaUsers,
 } from 'react-icons/fa'
-import { Link, useLocation } from 'react-router-dom'
+import { NavLink, useLocation } from 'react-router-dom'
 import React, { useEffect, useState } from 'react'
 
 export default function Navbar() {
 	const location = useLocation()
-	
+
 	const [isLogged, setIsLogged] = useState(!!localStorage.getItem('email'))
+	const role = localStorage.getItem('role')
 
 	useEffect(() => {
 		// Recheck on every route change
 		setIsLogged(!!localStorage.getItem('email'))
 	}, [location])
 
+	const navLinkClass = ({ isActive }) =>
+		isActive
+			? 'text-sky-400 font-bold'
+			: 'text-gray-200 hover:text-white transition-colors'
+
 	return (
 		<nav className='py-7 px-14'>
-			<div className='flex justify-between items-center h-full text-white'>
+			<div className='flex justify-between items-center h-full'>
 				<div>
 					<h1 className='text-4xl font-bold tracking-wider'>
-						<Link to='/'>
+						<NavLink to='/' className={navLinkClass}>
 							Hack<span className='text-sky-500'>Mate</span>
-						</Link>
+						</NavLink>
 					</h1>
 				</div>
 				<div className='flex justify-center items-center tracking-widest'>
 					<ul className='flex gap-12 text-normal mx-8'>
 						<li>
-							<Link to='/teammate' className='underLight'>
+							<NavLink to='/' className={navLinkClass}>
 								<div className='flex items-center'>
-									Find TeamMate{' '}
+									Events
 									<FaUsers className='ml-2 ' size={18} />
 								</div>
-							</Link>
+							</NavLink>
 						</li>
+						{role !== 'host' ? (
+							<li>
+								<NavLink
+									to='/teammate'
+									className={navLinkClass}
+								>
+									<div className='flex items-center'>
+										Find TeamMate
+										<FaUsers className='ml-2 ' size={18} />
+									</div>
+								</NavLink>
+							</li>
+						) : (
+							''
+						)}
+
+						{role === 'host' && (
+							<>
+								<li>
+									<NavLink
+										to='/addEvents'
+										className={navLinkClass}
+									>
+										<div className='flex items-center'>
+											Hosted Events
+											<FaCalendarAlt
+												className='ml-2 '
+												size={15}
+											/>
+										</div>
+									</NavLink>
+								</li>
+								<li>
+									<NavLink
+										to='/addEvents'
+										className={navLinkClass}
+									>
+										<div className='flex items-center'>
+											Host Events
+											<FaCalendarAlt
+												className='ml-2 '
+												size={15}
+											/>
+										</div>
+									</NavLink>
+								</li>
+							</>
+						)}
+
 						<li>
-							<Link to='/addEvents' className='underLight'>
-								<div className='flex items-center'>
-									Hosted Events
-									<FaCalendarAlt
-										className='ml-2 '
-										size={15}
-									/>
-								</div>
-							</Link>
-						</li>
-						<li>
-							<Link to='/addEvents' className='underLight'>
-								<div className='flex items-center'>
-									Host Events
-									<FaCalendarAlt
-										className='ml-2 '
-										size={15}
-									/>
-								</div>
-							</Link>
-						</li>
-						<li>
-							<Link to='profile' className='underLight'>
+							<NavLink to='/profile' className={navLinkClass}>
 								<div className='flex items-center'>
 									Profile
 									<FaUserCircle className='ml-2 ' size={18} />
 								</div>
-							</Link>
+							</NavLink>
 						</li>
 						<li>
 							{isLogged ? (
-								<Link to='/login' className='underLight'>
+								<NavLink to='/login' className={navLinkClass}>
 									<button
 										className='flex items-center text-red-500'
 										onClick={() => {
@@ -78,14 +111,10 @@ export default function Navbar() {
 										}}
 									>
 										Logout
-										{/* <FaSignInAlt
-											className='ml-2 '
-											size={18}
-										/> */}
 									</button>
-								</Link>
+								</NavLink>
 							) : (
-								<Link to='/login' className='underLight'>
+								<NavLink to='/login' className={navLinkClass}>
 									<div className='flex items-center'>
 										Login
 										<FaSignInAlt
@@ -93,7 +122,7 @@ export default function Navbar() {
 											size={18}
 										/>
 									</div>
-								</Link>
+								</NavLink>
 							)}
 						</li>
 					</ul>
