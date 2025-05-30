@@ -63,7 +63,8 @@ export async function addEventAPI(
 	date,
 	location,
 	eventType,
-	description
+	description,
+	hostedBy
 ) {
 	const res = await axios.post(URL_2 + '/api/addEvent', {
 		eventName,
@@ -71,6 +72,7 @@ export async function addEventAPI(
 		location,
 		eventType,
 		description,
+		hostedBy,
 	})
 	return res.data
 }
