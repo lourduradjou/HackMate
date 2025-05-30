@@ -51,6 +51,12 @@ export async function fetchAllEventsAPI() {
 	return res.data
 }
 
+// fetch all events api hosted by a person via email
+export async function fetchAllEventsHostedAPI(email) {
+	const res = await axios.get(`${URL_2}/api/viewEvents/`+ email)
+	return res.data
+}
+
 // add event api
 export async function addEventAPI(
 	eventName,
@@ -93,6 +99,22 @@ export async function updateEventAPI(
 		location,
 		eventType,
 		description,
+	})
+	return res.data
+}
+
+
+// fetch events user registered to
+export async function fetchMyEvents(email) {
+	const res = await axios.get(`${URL_2}/api/myEvents/${email}`)
+	return res.data
+}
+
+// cancel a registered event
+export async function cancelEvent(eventId, email) {
+	const res = await axios.post(`${URL_2}/api/cancelEvent`, {
+		eventId,
+		email,
 	})
 	return res.data
 }
