@@ -50,11 +50,11 @@ const FindTeammatePage = () => {
 		: teammates
 
 	if (loading) {
-		return <p className='text-center mt-10'>Loading teammates...</p>
+		return <p className='text-gray-200 text-center mt-10'>Loading teammates...</p>
 	}
 
 	if (error) {
-		return <p className='text-center mt-10 text-red-500'>{error}</p>
+		return <p className='text-gray-200 text-center mt-10 text-red-500'>{error}</p>
 	}
 
 	return (

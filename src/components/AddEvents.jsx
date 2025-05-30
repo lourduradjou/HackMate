@@ -4,19 +4,23 @@ import { addEventAPI } from '../api'
 import { useNavigate } from 'react-router-dom'
 
 export default function AddEvents() {
+	let email;
 	const [formData, setFormData] = useState({
 		title: '',
 		date: '',
 		location: '',
 		type: '',
 		description: '',
+		hostedBy: email,
 	})
 	const navigate = useNavigate()
 	useEffect(() => {
-		const email = localStorage.getItem('email')
+		email = localStorage.getItem('email')
 		if (!email) {
 			navigate('/login')
 			return
+		}else {
+			
 		}
 	})
 

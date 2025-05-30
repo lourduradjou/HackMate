@@ -40,6 +40,17 @@ export default function Navbar() {
 						<li>
 							<Link to='/addEvents' className='underLight'>
 								<div className='flex items-center'>
+									Hosted Events
+									<FaCalendarAlt
+										className='ml-2 '
+										size={15}
+									/>
+								</div>
+							</Link>
+						</li>
+						<li>
+							<Link to='/addEvents' className='underLight'>
+								<div className='flex items-center'>
 									Host Events
 									<FaCalendarAlt
 										className='ml-2 '

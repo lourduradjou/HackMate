@@ -39,13 +39,13 @@ export async function fetchAllTeammatesAPI() {
 
 // fetch all events api
 export async function fetchAllEventsAPI() {
-	const res = await axios.get(`${URL_1}/api/viewEvents`)
+	const res = await axios.get(`${URL_2}/api/viewEvents`)
 	return res.data
 }
 
 // add event api
 export async function addEventAPI(eventName, date, location, eventType, description) {
-	const res = await axios.post(URL_1 + '/api/addEvent', {
+	const res = await axios.post(URL_2 + '/api/addEvent', {
 		eventName,
 		date,
 		location,
@@ -57,7 +57,7 @@ export async function addEventAPI(eventName, date, location, eventType, descript
 
 // remove an event
 export async function removeEventAPI(eventId) {
-	const res = await axios.delete(`${URL_1}/api/removeEvent`, {
+	const res = await axios.delete(`${URL_2}/api/removeEvent`, {
 		params: { eventId },
 	})
 	return res.data
@@ -72,7 +72,7 @@ export async function updateEventAPI(
 	eventType,
 	description
 ) {
-	const res = await axios.post(URL_1 + '/api/updateEvent', {
+	const res = await axios.post(URL_2 + '/api/updateEvent', {
 		eventId,
 		eventName,
 		date,
