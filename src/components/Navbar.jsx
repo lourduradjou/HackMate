@@ -63,7 +63,7 @@ export default function Navbar() {
 							<>
 								<li>
 									<NavLink
-										to='/addEvents'
+										to='/hostedEvents'
 										className={navLinkClass}
 									>
 										<div className='flex items-center'>

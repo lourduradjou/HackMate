@@ -7,6 +7,7 @@ import FindTeammatePage from './pages/FindTeammatePage'
 import Footer from './components/Footer'
 import Homepage from './pages/Homepage'
 import HostEvents from './pages/HostEvents'
+import HostedEventsPage from './pages/HostedEvents'
 import LoginPage from './pages/LoginPage'
 import Navbar from './components/Navbar'
 import ProfilePage from './pages/ProfilePage'
@@ -24,6 +25,24 @@ export default function App() {
 						<>
 							<Navbar />
 							<Homepage />
+						</>
+					}
+				/>
+				<Route
+					path='/hostedEvents'
+					element={
+						<>
+							<Navbar />
+							<HostedEventsPage />
+						</>
+					}
+				/>
+				<Route
+					path='/myEvents'
+					element={
+						<>
+							<Navbar />
+							<MyRegisteredEventsPage />
 						</>
 					}
 				/>
