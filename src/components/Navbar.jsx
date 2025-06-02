@@ -1,27 +1,37 @@
-import {
-	FaCalendarAlt,
-	FaSignInAlt,
-	FaUserCircle,
-	FaUsers,
-} from 'react-icons/fa'
+import { FaCalendarAlt, FaSignInAlt, FaUsers } from 'react-icons/fa'
 import { NavLink, useLocation } from 'react-router-dom'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
+
+import { MdNotifications } from 'react-icons/md'
+import { getInvitations } from '../api' // adjust the import path
 
 export default function Navbar() {
 	const location = useLocation()
 
 	const [isLogged, setIsLogged] = useState(!!localStorage.getItem('email'))
+	const [notificationCount, setNotificationCount] = useState(0)
 	const role = localStorage.getItem('role')
 
 	useEffect(() => {
-		// Recheck on every route change
 		setIsLogged(!!localStorage.getItem('email'))
+
+		const email = localStorage.getItem('email')
+		if (email) {
+			getInvitations(email)
+				.then((data) => {
+					setNotificationCount(data.requests.length)
+				})
+				.catch((err) => {
+					console.error('Failed to fetch invitations:', err)
+					setNotificationCount(0)
+				})
+		}
 	}, [location])
 
 	const navLinkClass = ({ isActive }) =>
 		isActive
 			? 'text-sky-400 font-bold cursor-pointer transition-colors '
-			: 'text-gray-200 hover:text-white transition-colors cursor-pointer transition-colors '
+			: 'text-gray-200 hover:text-white transition-colors cursor-pointer '
 
 	return (
 		<nav className='py-7 px-14'>
@@ -35,6 +45,26 @@ export default function Navbar() {
 				</div>
 				<div className='flex justify-center items-center tracking-widest'>
 					<ul className='flex gap-12 text-normal mx-8'>
+						{role !== 'host' && (
+							<NavLink
+								to='/myInvitations'
+								className={navLinkClass}
+							>
+								<div className='relative flex items-center w-full h-full'>
+									Notifications
+									<MdNotifications
+										className='ml-2'
+										size={18}
+									/>
+									{/* {notificationCount} */}
+									{notificationCount > 0 && (
+										<span className='absolute -top-2 -right-4 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center'>
+											{notificationCount}
+										</span>
+									)}
+								</div>
+							</NavLink>
+						)}
 						<li>
 							<NavLink to='/' className={navLinkClass}>
 								<div className='flex items-center'>
@@ -74,9 +104,7 @@ export default function Navbar() {
 									</NavLink>
 								</li>
 							</>
-						) : (
-							''
-						)}
+						) : null}
 
 						{role === 'host' && (
 							<>
@@ -110,21 +138,6 @@ export default function Navbar() {
 								</li>
 							</>
 						)}
-						{/* {role !== 'host' ? (
-							<li>
-								<NavLink to='/profile' className={navLinkClass}>
-									<div className='flex items-center'>
-										Profile
-										<FaUserCircle
-											className='ml-2 '
-											size={18}
-										/>
-									</div>
-								</NavLink>
-							</li>
-						) : (
-							''
-						)} */}
 
 						<li>
 							{isLogged ? (

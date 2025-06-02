@@ -10,6 +10,7 @@ import HostedEventsPage from './pages/HostedEvents'
 import LoginPage from './pages/LoginPage'
 import MyEvents from './pages/MyEvents'
 import Navbar from './components/Navbar'
+import NotificationsPage from './pages/NotificationPage'
 import ProfilePage from './pages/ProfilePage'
 import RegisterPage from './pages/RegisterPage'
 
@@ -98,7 +99,16 @@ export default function App() {
 						</>
 					}
 				/>
-			
+
+				<Route
+					path='/myInvitations'
+					element={
+						<>
+							<Navbar />
+							<NotificationsPage />
+						</>
+					}
+				/>
 			</Routes>
 			{/* <Footer /> */}
 		</div>

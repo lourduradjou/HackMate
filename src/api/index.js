@@ -140,8 +140,8 @@ export async function cancelEvent(eventId, email) {
 // send teammate requests api
 export async function sendTeammateRequest(requestTo, requester) {
 	const res = await axios.post(`${URL_1}/api/teammate/sendRequest`, {
-		requestTo : requestTo,
-		requester : requester,
+		requestTo: requestTo,
+		requester: requester,
 	})
 	return res.data
 }
@@ -149,7 +149,7 @@ export async function sendTeammateRequest(requestTo, requester) {
 // get invitations in the beginning
 
 export async function getInvitations(email) {
-	const res = await axios.post(`${URL_1}/api/teammate/invitations/` + email)
+	const res = await axios.get(`${URL_1}/api/teammate/invitations/` + email)
 	return res.data
 }
 
