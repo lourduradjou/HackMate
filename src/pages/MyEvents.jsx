@@ -116,7 +116,7 @@ const MyEvents = () => {
 										onClick={() =>
 											handleCancel(item.event.id)
 										}
-										className='text-red-500 hover:text-red-700 font-semibold'
+										className='text-red-500 hover:text-red-700 cursor-pointer font-semibold'
 									>
 										Cancel
 									</button>

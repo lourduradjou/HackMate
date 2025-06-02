@@ -155,7 +155,7 @@ const FindTeammatePage = () => {
 											className={`flex gap-2 items-center px-3 py-1 rounded ${
 												sending[item.email]
 													? 'bg-gray-400 cursor-not-allowed'
-													: 'bg-blue-600 hover:bg-blue-700 text-white'
+													: 'bg-blue-600 hover:bg-blue-700 cursor-pointer text-white'
 											}`}
 										>
 											<div>

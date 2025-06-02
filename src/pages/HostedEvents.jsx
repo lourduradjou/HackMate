@@ -113,13 +113,13 @@ export default function HostedEventsPage() {
 							<div className='space-x-2'>
 								<button
 									onClick={() => openEditModal(event)}
-									className='px-3 py-1 rounded bg-yellow-500 hover:bg-yellow-600 text-black'
+									className='px-3 py-1 rounded cursor-pointer bg-yellow-500 hover:bg-yellow-600 text-black'
 								>
 									Edit
 								</button>
 								<button
 									onClick={() => handleDelete(event.id)}
-									className='px-3 py-1 rounded bg-red-500 hover:bg-red-600 text-white'
+									className='px-3 py-1 rounded cursor-pointer bg-red-500 hover:bg-red-600 text-white'
 								>
 									Delete
 								</button>
@@ -208,7 +208,7 @@ export default function HostedEventsPage() {
 								</button>
 								<button
 									type='submit'
-									className='px-3 py-1 rounded bg-green-500 hover:bg-green-600 text-white'
+									className='px-3 py-1 rounded bg-green-500 cursor-pointer hover:bg-green-600 text-white'
 								>
 									Save
 								</button>

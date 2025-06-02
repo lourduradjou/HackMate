@@ -140,8 +140,8 @@ export async function cancelEvent(eventId, email) {
 // send teammate requests api
 export async function sendTeammateRequest(requestTo, requester) {
 	const res = await axios.post(`${URL_1}/api/teammate/sendRequest`, {
-		requestTo,
-		requester,
+		requestTo : requestTo,
+		requester : requester,
 	})
 	return res.data
 }

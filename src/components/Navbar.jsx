@@ -20,8 +20,8 @@ export default function Navbar() {
 
 	const navLinkClass = ({ isActive }) =>
 		isActive
-			? 'text-sky-400 font-bold'
-			: 'text-gray-200 hover:text-white transition-colors'
+			? 'text-sky-400 font-bold cursor-pointer transition-colors '
+			: 'text-gray-200 hover:text-white transition-colors cursor-pointer transition-colors '
 
 	return (
 		<nav className='py-7 px-14'>
@@ -130,7 +130,7 @@ export default function Navbar() {
 							{isLogged ? (
 								<NavLink to='/login' className={navLinkClass}>
 									<button
-										className='flex items-center text-red-500'
+										className='flex items-center text-red-500 cursor-pointer'
 										onClick={() => {
 											localStorage.removeItem('email')
 											setIsLogged(false)
