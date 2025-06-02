@@ -50,7 +50,7 @@ export default function HackCard({
 	}
 
 	return (
-		<div className='flex-1 max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700'>
+		<div className='min-w-[200px] max-w-sm  bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700'>
 			<div className='p-5 flex justify-between flex-col'>
 				<h5 className='mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white'>
 					{title}

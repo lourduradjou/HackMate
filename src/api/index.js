@@ -94,7 +94,7 @@ export async function updateEventAPI(
 	eventType,
 	description
 ) {
-	const res = await axios.post(URL_2 + '/api/updateEvent', {
+	const res = await axios.put(URL_2 + '/api/updateEvent', {
 		eventId,
 		eventName,
 		date,
@@ -104,8 +104,10 @@ export async function updateEventAPI(
 	})
 	return res.data
 }
+
+//register events
 export async function registerEventAPI(eventId, email) {
-	const res = await axios.post(`${URL_1}/api/registerEvent`, {
+	const res = await axios.post(`${URL_2}/api/registrations`, {
 		eventId,
 		email,
 	})
@@ -117,15 +119,42 @@ export async function registerEventAPI(eventId, email) {
 
 // fetch events user registered to
 export async function fetchMyEvents(email) {
-	const res = await axios.get(`${URL_2}/api/myEvents/${email}`)
+	const res = await axios.get(`${URL_2}/api/registrations`, {
+		params: email,
+	})
 	return res.data
 }
 
 // cancel a registered event
 export async function cancelEvent(eventId, email) {
-	const res = await axios.post(`${URL_2}/api/cancelEvent`, {
-		eventId,
-		email,
+	const res = await axios.delete(`${URL_2}/api/registrations`, {
+		params: {
+			email: email,
+			eventId: eventId,
+		},
 	})
+	return res.data
+}
+
+// -------------------------------------------------------------
+// send teammate requests api
+export async function sendTeammateRequest(requestTo, requester) {
+	const res = await axios.post(`${URL_1}/api/teammate/sendRequest`, {
+		requestTo,
+		requester,
+	})
+	return res.data
+}
+
+// get invitations in the beginning
+
+export async function getInvitations(email) {
+	const res = await axios.post(`${URL_1}/api/teammate/invitations/` + email)
+	return res.data
+}
+
+// requests that i gave and its status
+export async function getMyRequestsDetails(email) {
+	const res = await axios.post(`${URL_1}/api/teammate/getRequests/` + email)
 	return res.data
 }

@@ -42,7 +42,7 @@ const ProfileCard = () => {
 	}, [])
 
 	if (loading) {
-		return <div className='max-w-sm mx-auto p-4'>Loading profile...</div>
+		return <div className='max-w-sm mx-auto p-4 text-white'>Loading profile...</div>
 	}
 
 	if (error) {

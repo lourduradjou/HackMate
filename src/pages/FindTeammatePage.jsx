@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
+import { fetchAllTeammatesAPI, sendTeammateRequest } from '../api' // added sendTeammateRequest
 
 import { IoIosSend } from 'react-icons/io'
 import Search from '../components/Search'
-import { fetchAllTeammatesAPI } from '../api' // adjust path as needed
 import { useNavigate } from 'react-router-dom'
 
 const FindTeammatePage = () => {
@@ -10,6 +10,8 @@ const FindTeammatePage = () => {
 	const [teammates, setTeammates] = useState([])
 	const [loading, setLoading] = useState(true)
 	const [error, setError] = useState('')
+	const [sending, setSending] = useState({}) // track sending state for each user
+	const [successMessage, setSuccessMessage] = useState('')
 
 	const navigate = useNavigate()
 
@@ -22,7 +24,8 @@ const FindTeammatePage = () => {
 		const fetchTeammates = async () => {
 			try {
 				const res = await fetchAllTeammatesAPI()
-				setTeammates(res) // assuming res is the array of teammates
+				setTeammates(res)
+				console.log(res)
 			} catch (err) {
 				console.error(err)
 				setError('❌ Failed to fetch teammates')
@@ -32,22 +35,42 @@ const FindTeammatePage = () => {
 		}
 
 		fetchTeammates()
-	}, [])
+	}, [navigate])
+
+	const handleSendRequest = async (requestTo) => {
+		const requester = localStorage.getItem('email')
+		if (!requester) {
+			alert('You must be logged in to send requests.')
+			return
+		}
+		try {
+			setSending((prev) => ({ ...prev, [requestTo]: true }))
+			await sendTeammateRequest(requestTo, requester)
+			setSuccessMessage(`✅ Request sent to ${requestTo}`)
+		} catch (err) {
+			console.error('Failed to send request', err)
+			alert(`Failed to send request to ${requestTo}`)
+		} finally {
+			setSending((prev) => ({ ...prev, [requestTo]: false }))
+		}
+	}
 
 	const filteredHackathonsEvents = searchItem
 		? teammates.filter(
 				(team) =>
-					team.name
-						.toLowerCase()
-						.includes(searchItem.toLowerCase()) ||
-					team.education
-						.toLowerCase()
-						.includes(searchItem.toLowerCase()) ||
+					(team.skills.length > 0 &&
+						team.email !== localStorage.getItem('email') &&
+						team.name.toLowerCase().includes(searchItem.toLowerCase())) ||
+					team.education.toLowerCase().includes(searchItem.toLowerCase()) ||
 					team.skills.some((skill) =>
 						skill.toLowerCase().includes(searchItem.toLowerCase())
 					)
 		  )
-		: teammates
+		: teammates.filter(
+				(team) =>
+					team.skills.length > 0 &&
+					team.email !== localStorage.getItem('email')
+		  )
 
 	if (loading) {
 		return (
@@ -68,6 +91,11 @@ const FindTeammatePage = () => {
 	return (
 		<div>
 			<Search searchItem={searchItem} setSearchItem={setSearchItem} />
+			{successMessage && (
+				<p className='text-green-500 text-center mt-4'>
+					{successMessage}
+				</p>
+			)}
 			<section className='mt-16'>
 				<div className='relative overflow-x-auto shadow-md sm:rounded-lg w-2/3 mx-auto'>
 					<table className='w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400'>
@@ -119,17 +147,24 @@ const FindTeammatePage = () => {
 										{item.education}
 									</td>
 									<td className='px-6 py-4 text-right'>
-										<a
-											href={`mailto:${item.email}?subject=Hackathon%20Team%20Request&body=Hi%20${item.name},%0A%0AI%20came%20across%20your%20profile%20on%20HackMate%20and%20would%20love%20to%20team%20up%20for%20a%20hackathon!%0A%0AHere%27s%20a%20bit%20about%20me:%0A- Name:%20[Your%20Name]%0A- Skills:%20[Your%20Skills]%0A- Why%20I%27d%20like%20to%20collaborate:%20[Your%20Reason]%0A%0ALet%20me%20know%20if%20you%27re%20interested!%0A%0AThanks!`}
-											className='font-medium text-blue-600 dark:text-blue-500 hover:underline'
+										<button
+											onClick={() =>
+												handleSendRequest(item.email)
+											}
+											disabled={sending[item.email]}
+											className={`flex gap-2 items-center px-3 py-1 rounded ${
+												sending[item.email]
+													? 'bg-gray-400 cursor-not-allowed'
+													: 'bg-blue-600 hover:bg-blue-700 text-white'
+											}`}
 										>
-											<button className='flex gap-2 items-center'>
-												<div>Show Interest</div>
-												<div>
-													<IoIosSend size={24} />
-												</div>
-											</button>
-										</a>
+											<div>
+												{sending[item.email]
+													? 'Sending...'
+													: 'Show Interest'}
+											</div>
+											<IoIosSend size={20} />
+										</button>
 									</td>
 								</tr>
 							))}

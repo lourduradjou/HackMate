@@ -38,23 +38,42 @@ export default function Navbar() {
 						<li>
 							<NavLink to='/' className={navLinkClass}>
 								<div className='flex items-center'>
-									Events
+									All Events
 									<FaUsers className='ml-2 ' size={18} />
 								</div>
 							</NavLink>
 						</li>
 						{role !== 'host' ? (
-							<li>
-								<NavLink
-									to='/teammate'
-									className={navLinkClass}
-								>
-									<div className='flex items-center'>
-										Find TeamMate
-										<FaUsers className='ml-2 ' size={18} />
-									</div>
-								</NavLink>
-							</li>
+							<>
+								<li>
+									<NavLink
+										to='/teammate'
+										className={navLinkClass}
+									>
+										<div className='flex items-center'>
+											Find TeamMate
+											<FaUsers
+												className='ml-2 '
+												size={18}
+											/>
+										</div>
+									</NavLink>
+								</li>
+								<li>
+									<NavLink
+										to='/myEvents'
+										className={navLinkClass}
+									>
+										<div className='flex items-center'>
+											My Events
+											<FaUsers
+												className='ml-2 '
+												size={18}
+											/>
+										</div>
+									</NavLink>
+								</li>
+							</>
 						) : (
 							''
 						)}
@@ -91,7 +110,7 @@ export default function Navbar() {
 								</li>
 							</>
 						)}
-						{role !== 'host' ? (
+						{/* {role !== 'host' ? (
 							<li>
 								<NavLink to='/profile' className={navLinkClass}>
 									<div className='flex items-center'>
@@ -105,7 +124,7 @@ export default function Navbar() {
 							</li>
 						) : (
 							''
-						)}
+						)} */}
 
 						<li>
 							{isLogged ? (

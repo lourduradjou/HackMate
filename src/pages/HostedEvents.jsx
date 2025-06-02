@@ -5,26 +5,23 @@ export default function HostedEventsPage() {
 	const [events, setEvents] = useState([])
 	const [loading, setLoading] = useState(true)
 	const [error, setError] = useState(null)
+	const [editingEvent, setEditingEvent] = useState(null) // event being edited
+	const [formData, setFormData] = useState({
+		eventName: '',
+		date: '',
+		location: '',
+		eventType: '',
+		description: '',
+	})
 
 	const email = localStorage.getItem('email')
 
 	useEffect(() => {
 		async function fetchEvents() {
 			try {
-				const response = await fetchAllEventsHostedAPI(email)
-
-				if (response.status === 404) {
-					// No events found
-					setEvents([])
-					setError('No events hosted.')
-				} else if (!response.ok) {
-					// Other server errors
-					throw new Error(`Error: ${response.status}`)
-				} else {
-					const data = await response.json()
-					setEvents(data)
-					setError(null) // clear any previous error
-				}
+				const data = await fetchAllEventsHostedAPI(email)
+				setEvents(data.events)
+				setError(null)
 			} catch (err) {
 				if (err.message.includes('404')) {
 					setEvents([])
@@ -44,23 +41,51 @@ export default function HostedEventsPage() {
 	const handleDelete = async (eventId) => {
 		try {
 			await removeEventAPI(eventId)
-			setEvents((prev) => prev.filter((event) => event._id !== eventId))
+			setEvents((prev) => prev.filter((event) => event.id !== eventId))
 		} catch (err) {
-			console.error('Failed to delete event', err)
+			console.error('Failed to delete event', err.message)
 			alert('Failed to delete event')
 		}
 	}
 
-	const handleEdit = async (eventId) => {
-		// TODO: Open a modal or navigate to edit form
-		alert(`Stub: Edit event ${eventId}`)
+	const openEditModal = (event) => {
+		setEditingEvent(event)
+		setFormData({
+			eventName: event.eventName,
+			date: event.date,
+			location: event.location,
+			eventType: event.eventType,
+			description: event.description,
+		})
+	}
+
+	const handleEditSubmit = async (e) => {
+		e.preventDefault()
+		try {
+			await updateEventAPI(
+				editingEvent.id,
+				formData.eventName,
+				formData.date,
+				formData.location,
+				formData.eventType,
+				formData.description
+			)
+			setEvents((prev) =>
+				prev.map((ev) =>
+					ev.id === editingEvent.id ? { ...ev, ...formData } : ev
+				)
+			)
+			setEditingEvent(null)
+		} catch (err) {
+			console.error('Failed to update event', err.message)
+			alert('Failed to update event')
+		}
 	}
 
 	if (loading)
 		return <div className='text-center text-gray-300'>Loading...</div>
 
-	if (error)
-		return <div className='text-center text-red-500'>{error}</div>
+	if (error) return <div className='text-center text-red-500'>{error}</div>
 
 	return (
 		<div className='p-10 text-gray-200'>
@@ -71,7 +96,7 @@ export default function HostedEventsPage() {
 				<ul className='space-y-6'>
 					{events.map((event) => (
 						<li
-							key={event._id}
+							key={event.id}
 							className='border border-gray-700 rounded-lg p-4 flex justify-between items-center'
 						>
 							<div>
@@ -87,13 +112,13 @@ export default function HostedEventsPage() {
 							</div>
 							<div className='space-x-2'>
 								<button
-									onClick={() => handleEdit(event._id)}
+									onClick={() => openEditModal(event)}
 									className='px-3 py-1 rounded bg-yellow-500 hover:bg-yellow-600 text-black'
 								>
 									Edit
 								</button>
 								<button
-									onClick={() => handleDelete(event._id)}
+									onClick={() => handleDelete(event.id)}
 									className='px-3 py-1 rounded bg-red-500 hover:bg-red-600 text-white'
 								>
 									Delete
@@ -102,6 +127,95 @@ export default function HostedEventsPage() {
 						</li>
 					))}
 				</ul>
+			)}
+
+			{/* Edit Modal */}
+			{editingEvent && (
+				<div className='fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center'>
+					<div className='bg-gray-800 p-6 rounded-lg w-96'>
+						<h3 className='text-xl mb-4'>Edit Event</h3>
+						<form onSubmit={handleEditSubmit} className='space-y-3'>
+							<input
+								type='text'
+								value={formData.eventName}
+								onChange={(e) =>
+									setFormData({
+										...formData,
+										eventName: e.target.value,
+									})
+								}
+								className='w-full p-2 rounded bg-gray-700 text-white'
+								placeholder='Event Name'
+								required
+							/>
+							<input
+								type='date'
+								value={formData.date}
+								onChange={(e) =>
+									setFormData({
+										...formData,
+										date: e.target.value,
+									})
+								}
+								className='w-full p-2 rounded bg-gray-700 text-white'
+								required
+							/>
+							<input
+								type='text'
+								value={formData.location}
+								onChange={(e) =>
+									setFormData({
+										...formData,
+										location: e.target.value,
+									})
+								}
+								className='w-full p-2 rounded bg-gray-700 text-white'
+								placeholder='Location'
+								required
+							/>
+							<input
+								type='text'
+								value={formData.eventType}
+								onChange={(e) =>
+									setFormData({
+										...formData,
+										eventType: e.target.value,
+									})
+								}
+								className='w-full p-2 rounded bg-gray-700 text-white'
+								placeholder='Event Type'
+								required
+							/>
+							<textarea
+								value={formData.description}
+								onChange={(e) =>
+									setFormData({
+										...formData,
+										description: e.target.value,
+									})
+								}
+								className='w-full p-2 rounded bg-gray-700 text-white'
+								placeholder='Description'
+								required
+							/>
+							<div className='flex justify-end space-x-2'>
+								<button
+									type='button'
+									onClick={() => setEditingEvent(null)}
+									className='px-3 py-1 rounded bg-gray-500 hover:bg-gray-600 text-white'
+								>
+									Cancel
+								</button>
+								<button
+									type='submit'
+									className='px-3 py-1 rounded bg-green-500 hover:bg-green-600 text-white'
+								>
+									Save
+								</button>
+							</div>
+						</form>
+					</div>
+				</div>
 			)}
 		</div>
 	)
