@@ -155,6 +155,13 @@ export async function getInvitations(email) {
 
 // requests that i gave and its status
 export async function getMyRequestsDetails(email) {
-	const res = await axios.post(`${URL_1}/api/teammate/getRequests/` + email)
+	const res = await axios.get(`${URL_1}/api/teammate/getRequests/` + email)
+	return res.data
+}
+
+// registered events details
+// who and all registered for a particular event api
+export async function getEventRegistration(eventId) {
+	const res = await axios.get(`${URL_2}/api/registrations/` + eventId)
 	return res.data
 }

@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { fetchAllTeammatesAPI, sendTeammateRequest } from '../api' // added sendTeammateRequest
+import {
+	fetchAllTeammatesAPI,
+	getMyRequestsDetails,
+	sendTeammateRequest,
+} from '../api'
 
 import { IoIosSend } from 'react-icons/io'
 import Search from '../components/Search'
@@ -10,8 +14,9 @@ const FindTeammatePage = () => {
 	const [teammates, setTeammates] = useState([])
 	const [loading, setLoading] = useState(true)
 	const [error, setError] = useState('')
-	const [sending, setSending] = useState({}) // track sending state for each user
+	const [sending, setSending] = useState({})
 	const [successMessage, setSuccessMessage] = useState('')
+	const [sentRequests, setSentRequests] = useState([])
 
 	const navigate = useNavigate()
 
@@ -21,20 +26,30 @@ const FindTeammatePage = () => {
 			navigate('/login')
 			return
 		}
-		const fetchTeammates = async () => {
+
+		const fetchData = async () => {
 			try {
-				const res = await fetchAllTeammatesAPI()
-				setTeammates(res)
-				console.log(res)
+				const [allTeammates, myRequests] = await Promise.all([
+					fetchAllTeammatesAPI(),
+					getMyRequestsDetails(email),
+				])
+				setTeammates(allTeammates)
+
+				const alreadySent = myRequests?.requests?.map(
+					(req) => req.requestTo
+				)
+
+				console.log(allTeammates)
+				setSentRequests(alreadySent || [])
 			} catch (err) {
 				console.error(err)
-				setError('❌ Failed to fetch teammates')
+				setError('❌ Failed to fetch data')
 			} finally {
 				setLoading(false)
 			}
 		}
 
-		fetchTeammates()
+		fetchData()
 	}, [navigate])
 
 	const handleSendRequest = async (requestTo) => {
@@ -47,6 +62,9 @@ const FindTeammatePage = () => {
 			setSending((prev) => ({ ...prev, [requestTo]: true }))
 			await sendTeammateRequest(requestTo, requester)
 			setSuccessMessage(`✅ Request sent to ${requestTo}`)
+
+			// Disable the button for this email by updating the sentRequests state
+			setSentRequests((prev) => [...prev, requestTo])
 		} catch (err) {
 			console.error('Failed to send request', err)
 			alert(`Failed to send request to ${requestTo}`)
@@ -60,8 +78,12 @@ const FindTeammatePage = () => {
 				(team) =>
 					(team.skills.length > 0 &&
 						team.email !== localStorage.getItem('email') &&
-						team.name.toLowerCase().includes(searchItem.toLowerCase())) ||
-					team.education.toLowerCase().includes(searchItem.toLowerCase()) ||
+						team.name
+							.toLowerCase()
+							.includes(searchItem.toLowerCase())) ||
+					team.education
+						.toLowerCase()
+						.includes(searchItem.toLowerCase()) ||
 					team.skills.some((skill) =>
 						skill.toLowerCase().includes(searchItem.toLowerCase())
 					)
@@ -81,11 +103,7 @@ const FindTeammatePage = () => {
 	}
 
 	if (error) {
-		return (
-			<p className='text-gray-200 text-center mt-10 text-red-500'>
-				{error}
-			</p>
-		)
+		return <p className=' text-center mt-10 text-red-500'>{error}</p>
 	}
 
 	return (
@@ -119,55 +137,72 @@ const FindTeammatePage = () => {
 							</tr>
 						</thead>
 						<tbody>
-							{filteredHackathonsEvents.map((item, index) => (
-								<tr
-									key={index}
-									className='bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600'
-								>
-									<th
-										scope='row'
-										className='px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white'
+							{filteredHackathonsEvents.map((item, index) => {
+								const alreadyRequested = sentRequests.includes(
+									item.email
+								)
+								return (
+									<tr
+										key={index}
+										className='bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600'
 									>
-										{item.name}
-									</th>
-									<td className='px-6 py-4'>{item.email}</td>
-									<td className='px-6 py-4'>
-										<div className='flex flex-wrap gap-2'>
-											{item.skills.map((skill, idx) => (
-												<span
-													key={idx}
-													className='px-2 py-1 bg-blue-200 rounded text-xs text-blue-800'
-												>
-													{skill}
-												</span>
-											))}
-										</div>
-									</td>
-									<td className='px-6 py-4'>
-										{item.education}
-									</td>
-									<td className='px-6 py-4 text-right'>
-										<button
-											onClick={() =>
-												handleSendRequest(item.email)
-											}
-											disabled={sending[item.email]}
-											className={`flex gap-2 items-center px-3 py-1 rounded ${
-												sending[item.email]
-													? 'bg-gray-400 cursor-not-allowed'
-													: 'bg-blue-600 hover:bg-blue-700 cursor-pointer text-white'
-											}`}
+										<th
+											scope='row'
+											className='px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white'
 										>
-											<div>
-												{sending[item.email]
-													? 'Sending...'
-													: 'Show Interest'}
+											{item.name}
+										</th>
+										<td className='px-6 py-4'>
+											{item.email}
+										</td>
+										<td className='px-6 py-4'>
+											<div className='flex flex-wrap gap-2'>
+												{item.skills.map(
+													(skill, idx) => (
+														<span
+															key={idx}
+															className='px-2 py-1 bg-blue-200 rounded text-xs text-blue-800'
+														>
+															{skill}
+														</span>
+													)
+												)}
 											</div>
-											<IoIosSend size={20} />
-										</button>
-									</td>
-								</tr>
-							))}
+										</td>
+										<td className='px-6 py-4'>
+											{item.education}
+										</td>
+										<td className='px-6 py-4 text-right'>
+											<button
+												onClick={() =>
+													handleSendRequest(
+														item.email
+													)
+												}
+												disabled={
+													sending[item.email] ||
+													alreadyRequested
+												}
+												className={`flex gap-2 items-center px-3 py-1 rounded ${
+													sending[item.email] ||
+													alreadyRequested
+														? 'bg-gray-400 cursor-not-allowed'
+														: 'bg-blue-600 hover:bg-blue-700 cursor-pointer text-white'
+												}`}
+											>
+												<div>
+													{alreadyRequested
+														? 'Requested'
+														: sending[item.email]
+														? 'Sending...'
+														: 'Show Interest'}
+												</div>
+												<IoIosSend size={20} />
+											</button>
+										</td>
+									</tr>
+								)
+							})}
 						</tbody>
 					</table>
 				</div>

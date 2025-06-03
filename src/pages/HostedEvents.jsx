@@ -1,11 +1,19 @@
 import React, { useEffect, useState } from 'react'
-import { fetchAllEventsHostedAPI, removeEventAPI, updateEventAPI } from '../api'
+import {
+	fetchAllEventsHostedAPI,
+	getEventRegistration,
+	removeEventAPI,
+	updateEventAPI,
+} from '../api'
 
 export default function HostedEventsPage() {
 	const [events, setEvents] = useState([])
 	const [loading, setLoading] = useState(true)
 	const [error, setError] = useState(null)
-	const [editingEvent, setEditingEvent] = useState(null) // event being edited
+	const [editingEvent, setEditingEvent] = useState(null)
+	const [viewingRegistrations, setViewingRegistrations] = useState(null)
+	const [registrations, setRegistrations] = useState([])
+
 	const [formData, setFormData] = useState({
 		eventName: '',
 		date: '',
@@ -34,7 +42,6 @@ export default function HostedEventsPage() {
 				setLoading(false)
 			}
 		}
-
 		fetchEvents()
 	}, [email])
 
@@ -82,6 +89,17 @@ export default function HostedEventsPage() {
 		}
 	}
 
+	const handleViewRegistrations = async (eventId) => {
+		try {
+			const data = await getEventRegistration(eventId)
+			setRegistrations(data)
+			setViewingRegistrations(eventId)
+		} catch (err) {
+			console.error('Failed to fetch registrations', err.message)
+			alert('Failed to fetch registrations')
+		}
+	}
+
 	if (loading)
 		return <div className='text-center text-gray-300'>Loading...</div>
 
@@ -110,7 +128,15 @@ export default function HostedEventsPage() {
 								<p className='text-sm'>{event.eventType}</p>
 								<p className='text-sm'>{event.description}</p>
 							</div>
-							<div className='space-x-2'>
+							<div className='space-x-2 flex'>
+								<button
+									onClick={() =>
+										handleViewRegistrations(event.id)
+									}
+									className='px-3 py-1 rounded cursor-pointer bg-blue-500 hover:bg-blue-600 text-white'
+								>
+									View Registrations
+								</button>
 								<button
 									onClick={() => openEditModal(event)}
 									className='px-3 py-1 rounded cursor-pointer bg-yellow-500 hover:bg-yellow-600 text-black'
@@ -131,7 +157,7 @@ export default function HostedEventsPage() {
 
 			{/* Edit Modal */}
 			{editingEvent && (
-				<div className='fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center'>
+				<div className='fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50'>
 					<div className='bg-gray-800 p-6 rounded-lg w-96'>
 						<h3 className='text-xl mb-4'>Edit Event</h3>
 						<form onSubmit={handleEditSubmit} className='space-y-3'>
@@ -214,6 +240,49 @@ export default function HostedEventsPage() {
 								</button>
 							</div>
 						</form>
+					</div>
+				</div>
+			)}
+
+			{/* Registration Modal */}
+			{viewingRegistrations && (
+				<div className='fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50'>
+					<div className='bg-gray-900 p-6 rounded-lg w-[500px] max-h-[80vh] overflow-y-auto'>
+						<h3 className='text-xl font-semibold mb-4'>
+							Registrations
+						</h3>
+						{registrations.length === 0 ? (
+							<p className='text-gray-400'>
+								No one has registered yet.
+							</p>
+						) : (
+							<ul className='space-y-2'>
+								{registrations.map((reg, idx) => (
+									<li
+										key={idx}
+										className='p-3 border border-gray-700 rounded'
+									>
+										<p className='text-white'>
+											<strong>Email:</strong> {reg.email}
+										</p>
+										<p className='text-gray-400 text-sm'>
+											Registered on: {reg.registeredOn}
+										</p>
+									</li>
+								))}
+							</ul>
+						)}
+						<div className='mt-4 text-right'>
+							<button
+								onClick={() => {
+									setViewingRegistrations(null)
+									setRegistrations([])
+								}}
+								className='px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded text-white'
+							>
+								Close
+							</button>
+						</div>
 					</div>
 				</div>
 			)}
