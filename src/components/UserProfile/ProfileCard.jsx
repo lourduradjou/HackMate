@@ -2,23 +2,26 @@ import React, { useEffect, useState } from 'react'
 
 import { fetchProfileAPI } from '../../api' // adjust import path accordingly
 import profileImage from '../../assets/images/profileImage.jpg'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
 const ProfileCard = () => {
 	const [profile, setProfile] = useState(null)
 	const [loading, setLoading] = useState(true)
 	const [error, setError] = useState(null)
-  const navigate = useNavigate()
+  	const navigate = useNavigate()
+	const location = useLocation()
 
 	useEffect(() => {
-		const email = localStorage.getItem('email')
+		const queryParams = new URLSearchParams(location.search)
+		const emailFromQuery = queryParams.get('email')
+		console.log(emailFromQuery)
+		const email = emailFromQuery || localStorage.getItem('email')
 		if (!email) {
 			navigate('/login')
 			return
 		}
 		const fetchProfile = async () => {
 			try {
-				const email = localStorage.getItem('email')
 				if (!email) {
 					setError('No email found in localStorage')
 					setLoading(false)
@@ -39,7 +42,7 @@ const ProfileCard = () => {
 		}
 
 		fetchProfile()
-	}, [])
+	}, [location.search, navigate])
 
 	if (loading) {
 		return <div className='max-w-sm mx-auto p-4 text-white'>Loading profile...</div>

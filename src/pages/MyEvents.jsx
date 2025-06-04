@@ -9,6 +9,8 @@ const MyEvents = () => {
 	const [error, setError] = useState('')
 	const navigate = useNavigate()
 
+	console.log(events)
+
 	useEffect(() => {
 		const email = localStorage.getItem('email')
 		if (!email) {
@@ -84,6 +86,7 @@ const MyEvents = () => {
 							<th className='px-6 py-3'>Date</th>
 							<th className='px-6 py-3'>Location</th>
 							<th className='px-6 py-3'>Type</th>
+							<th className='px-6 py-3'>Teammates</th>
 							<th className='px-6 py-3'>Registered On</th>
 							<th className='px-6 py-3'>Description</th>
 							<th className='px-6 py-3'>Action</th>
@@ -106,10 +109,16 @@ const MyEvents = () => {
 									{item.event.eventType}
 								</td>
 								<td className='px-6 py-4'>
+									{item.teammates.map((email, i) => <div key={i}>{email}</div>)}
+									<div >{item.email}</div>
+								</td>
+								<td className='px-6 py-4'>
 									{item.registeredOn}
 								</td>
 								<td className='px-6 py-4'>
-									{item.event.description}
+									{item.event.description.length > 50
+										? `${item.event.description.slice(0, 50)}...`
+										: item.event.description}
 								</td>
 								<td className='px-6 py-4'>
 									<button

@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react'
-
 import HackCard from './HackCard'
 import Search from './Search'
-import { fetchAllEventsAPI } from '../api' // adjust the import path if needed
+import { fetchAllEventsAPI, fetchMyEvents } from '../api'
 import { useNavigate } from 'react-router-dom'
 
 export default function HackathonLists() {
@@ -10,18 +9,25 @@ export default function HackathonLists() {
   const [hackEvents, setHackEvents] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [registeredEvents, setRegisteredEvents] = useState([])
 
   const navigate = useNavigate()
 
   useEffect(() => {
-    // Check for email in localStorage; if missing, redirect to login
-    const email = localStorage.getItem('email')
-    if (!email) {
-      navigate('/login')
-      return
-    }
+    const fetchData = async () => {
+      const email = localStorage.getItem('email')
+      if (!email) {
+        navigate('/login')
+        return
+      }
 
-    const fetchEvents = async () => {
+      try {
+        const myEventsRes = await fetchMyEvents({ email })
+        setRegisteredEvents(myEventsRes) // Expected to be an array of registered event objects
+      } catch (err) {
+        console.error(err)
+      }
+
       try {
         const res = await fetchAllEventsAPI()
         if (res.success) {
@@ -37,7 +43,7 @@ export default function HackathonLists() {
       }
     }
 
-    fetchEvents()
+    fetchData()
   }, [navigate])
 
   const filteredHackathonsEvents = searchItem
@@ -49,12 +55,16 @@ export default function HackathonLists() {
       )
     : hackEvents
 
+  function isRegistered(eventId) {
+    return registeredEvents.some((item) => item.event.id === eventId)
+  }
+
   if (loading) {
     return <p className='text-gray-200 text-center mt-10'>Loading hackathons...</p>
   }
 
   if (error) {
-    return <p className='text-gray-200 text-center mt-10 text-red-500'>{error}</p>
+    return <p className='text-red-500 text-center mt-10'>{error}</p>
   }
 
   return (
@@ -64,6 +74,7 @@ export default function HackathonLists() {
       <h1 className='font-bold text-2xl text-center my-6 bg-gradient-to-r from-blue-100 to-blue-300 bg-clip-text text-transparent'>
         Hackathon Lists
       </h1>
+
       {filteredHackathonsEvents.length === 0 ? (
         <p className='text-center'>No hackathons found.</p>
       ) : (
@@ -77,6 +88,8 @@ export default function HackathonLists() {
               location={event.location}
               description={event.description}
               type={event.eventType}
+              teamSize={event.maxTeamSize}
+              isRegistered={isRegistered(event.id)}
             />
           ))}
         </div>

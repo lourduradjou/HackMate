@@ -64,7 +64,8 @@ export async function addEventAPI(
 	location,
 	eventType,
 	description,
-	hostedBy
+	hostedBy,
+	teamSize
 ) {
 	const res = await axios.post(URL_2 + '/api/addEvent', {
 		eventName,
@@ -73,6 +74,7 @@ export async function addEventAPI(
 		eventType,
 		description,
 		hostedBy,
+		teamSize
 	})
 	return res.data
 }
@@ -92,7 +94,8 @@ export async function updateEventAPI(
 	date,
 	location,
 	eventType,
-	description
+	description,
+	teamSize
 ) {
 	const res = await axios.put(URL_2 + '/api/updateEvent', {
 		eventId,
@@ -101,15 +104,17 @@ export async function updateEventAPI(
 		location,
 		eventType,
 		description,
+		teamSize
 	})
 	return res.data
 }
 
 //register events
-export async function registerEventAPI(eventId, email) {
+export async function registerEventAPI(eventId, email, teammates = []) {
 	const res = await axios.post(`${URL_2}/api/registrations`, {
 		eventId,
 		email,
+		teammates
 	})
 	if (res.status !== 200) {
 		throw new Error(res.data.message || 'Registration failed')

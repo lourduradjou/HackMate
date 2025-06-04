@@ -122,9 +122,9 @@ const FindTeammatePage = () => {
 								<th scope='col' className='px-6 py-3'>
 									Name
 								</th>
-								<th scope='col' className='px-6 py-3'>
+								{/* <th scope='col' className='px-6 py-3'>
 									Email
-								</th>
+								</th> */}
 								<th scope='col' className='px-6 py-3'>
 									Skills
 								</th>
@@ -152,9 +152,9 @@ const FindTeammatePage = () => {
 										>
 											{item.name}
 										</th>
-										<td className='px-6 py-4'>
+										{/* <td className='px-6 py-4'>
 											{item.email}
-										</td>
+										</td> */}
 										<td className='px-6 py-4'>
 											<div className='flex flex-wrap gap-2'>
 												{item.skills.map(

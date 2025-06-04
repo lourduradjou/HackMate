@@ -14,6 +14,7 @@ export default function AddEvents() {
 		type: '',
 		description: '',
 		hostedBy: '',
+		maxTeammates: ''
 	})
 
 	const [message, setMessage] = useState('')
@@ -52,7 +53,8 @@ export default function AddEvents() {
 				formData.location,
 				formData.type,
 				formData.description,
-				formData.hostedBy
+				formData.hostedBy,
+				formData.maxTeammates || 1 // Default to 1 if not provided
 			)
 			if (response?.success) {
 				setMessage(response.message || 'Event added successfully!')
@@ -64,6 +66,7 @@ export default function AddEvents() {
 					description: '',
 					hostedBy: emailRef.current,
 				})
+				navigate('/hostedEvents') // Redirect to events page after successful addition
 			} else {
 				setError('Failed to add event.')
 			}
@@ -101,7 +104,7 @@ export default function AddEvents() {
 						type='date'
 						name='date'
 						id='date'
-						className='text-white block py-2.5 px-0 w-full text-sm  bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-600 peer'
+						className='text-white block py-2.5 px-0 w-full text-sm border-0 border-b-2 border-gray-300 appearance-none dark:text-white  focus:outline-none focus:ring-0 focus:border-blue-600 peer'
 						placeholder=' '
 						required
 						value={formData.date}
@@ -168,6 +171,28 @@ export default function AddEvents() {
 						Type
 					</label>
 				</div>
+
+				{/* Max Team Size */}
+				<div className='relative z-0 w-full mb-5 group'>
+					<input
+						type='number'
+						name='maxTeammates'
+						id='maxTeammates'
+						min='1'
+						className='block py-2.5 px-0 w-full text-sm text-gray-900 dark:text-white bg-transparent border-0 border-b-2 border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-600 peer'
+						placeholder=' '
+						required
+						value={formData.maxTeammates}
+						onChange={handleChange}
+					/>
+					<label
+						htmlFor='maxTeammates'
+						className='peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6'
+					>
+						Max Team Size
+					</label>
+				</div>
+
 
 				{/* Description */}
 				<div className='relative z-0 w-full mb-5 group'>

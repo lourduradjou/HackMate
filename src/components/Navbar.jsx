@@ -19,7 +19,13 @@ export default function Navbar() {
 		if (email) {
 			getInvitations(email)
 				.then((data) => {
-					setNotificationCount(data.requests.length)
+					let pendingCount = 0
+					data.requests.forEach((request) => {
+						if (request.status === 'pending') {
+							pendingCount++
+						}
+					})
+					setNotificationCount(pendingCount)
 				})
 				.catch((err) => {
 					console.error('Failed to fetch invitations:', err)
@@ -51,7 +57,6 @@ export default function Navbar() {
 								className={navLinkClass}
 							>
 								<div className='relative flex items-center w-full h-full'>
-									Notifications
 									<MdNotifications
 										className='ml-2'
 										size={18}

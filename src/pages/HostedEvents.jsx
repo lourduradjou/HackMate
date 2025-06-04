@@ -20,6 +20,7 @@ export default function HostedEventsPage() {
 		location: '',
 		eventType: '',
 		description: '',
+		teamSize: '', // Default to 1 if not provided
 	})
 
 	const email = localStorage.getItem('email')
@@ -63,6 +64,7 @@ export default function HostedEventsPage() {
 			location: event.location,
 			eventType: event.eventType,
 			description: event.description,
+			teamSize: event.maxTeamSize || 1, // Default to empty if not provided
 		})
 	}
 
@@ -75,7 +77,8 @@ export default function HostedEventsPage() {
 				formData.date,
 				formData.location,
 				formData.eventType,
-				formData.description
+				formData.description,
+				formData.teamSize
 			)
 			setEvents((prev) =>
 				prev.map((ev) =>
@@ -126,6 +129,7 @@ export default function HostedEventsPage() {
 								</p>
 								<p className='text-sm'>{event.location}</p>
 								<p className='text-sm'>{event.eventType}</p>
+								<p className='text-sm'>Team size : {event.maxTeamSize}</p>
 								<p className='text-sm'>{event.description}</p>
 							</div>
 							<div className='space-x-2 flex'>
@@ -212,6 +216,19 @@ export default function HostedEventsPage() {
 								placeholder='Event Type'
 								required
 							/>
+							<input
+								type='number'
+								value={formData.teamSize}
+								onChange={(e) =>
+									setFormData({
+										...formData,
+										teamSize: e.target.value,
+									})
+								}
+								className='w-full p-2 rounded bg-gray-700 text-white'
+								placeholder='Max Team Size'
+								required
+							/>
 							<textarea
 								value={formData.description}
 								onChange={(e) =>
@@ -264,6 +281,9 @@ export default function HostedEventsPage() {
 									>
 										<p className='text-white'>
 											<strong>Email:</strong> {reg.email}
+										</p>
+										<p className='text-white'>
+											<strong>Teammates:</strong> {reg.teammates.map((email, i) => <span>{email} , </span> )}
 										</p>
 										<p className='text-gray-400 text-sm'>
 											Registered on: {reg.registeredOn}
